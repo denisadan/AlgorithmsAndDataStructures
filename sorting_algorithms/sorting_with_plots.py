@@ -1,5 +1,6 @@
 import copy
 import heapq
+import math
 import random
 import time
 from typing import List, Callable, Union
@@ -88,14 +89,80 @@ def heap_sort(lst: List[int]) -> List[int]:
         return [heapq.heappop(h) for i in range(len(h))]
 
 
+def insertion_sort(array: List[int]) -> List[int]:
+    for i in range(1, len(array)):
+        current = array[i]
+        left_i = i - 1
+        while left_i >= 0:
+            if array[left_i] > current:
+                array[left_i + 1] = array[left_i]
+                array[left_i] = current
+                left_i = left_i - 1
+            else:
+                break
+    return array
+
+
+def split(list):
+    list_of_lists = []
+    for split in range(0, len(list), 1):
+        list_of_lists.append(list[split:split + 1])
+
+    return list_of_lists
+
+
+def merge(a, b):
+    c = []
+    while (len(a) > 0) and (len(b) > 0):
+        if a[0] < b[0]:
+            c.append(a[0])
+            a.remove(a[0])
+        else:
+            c.append(b[0])
+            b.remove(b[0])
+    if len(a) > 0:
+        c.extend(a)
+    if len(b) > 0:
+        c.extend(b)
+    return c
+
+
+def merge_sort(list_of_lists):
+    list_of_merged_lists = []
+    for merge_index in range(0, len(list_of_lists), 2):
+        if merge_index + 1 < len(list_of_lists):
+            list_of_merged_lists.append(merge(list_of_lists[merge_index], list_of_lists[merge_index + 1]))
+        else:
+            list_of_merged_lists.append(list_of_lists[merge_index])
+    return list_of_merged_lists
+
+
+def my_merge_sort(array: List[int]) -> List[int]:
+    list_of_lists = split(array)
+
+    list_of_merged_lists = []
+    n = len(array)
+    for i in range(int(math.log(n, 2) + 1)):
+        list_of_merged_lists = merge_sort(list_of_lists)
+        list_of_lists = list_of_merged_lists
+
+    return list_of_lists[0]
+
+
 if __name__ == '__main__':
     lengths = [10, 100, 200, 300, 400, 500, 700, 800, 900, 1000]
     lists = get_random_lists(lengths)
+
     quick_sort_results = get_times(lists, quick_sort)
     bubble_sort_results = get_times(lists, bubble_sort)
     heap_sort_results = get_times(lists, heap_sort)
+    insertion_sort_results = get_times(lists, insertion_sort)
+    merge_sort_results = get_times(lists, my_merge_sort)
+
     plt.plot(lengths, quick_sort_results, label='quick')
     plt.plot(lengths, bubble_sort_results, label='bubble')
     plt.plot(lengths, heap_sort_results, label='heap')
+    plt.plot(lengths, insertion_sort_results, label='insertion')
+    plt.plot(lengths, merge_sort_results, label='merge')
     plt.legend()
     plt.show()

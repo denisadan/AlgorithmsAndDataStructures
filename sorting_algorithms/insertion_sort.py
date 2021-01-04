@@ -41,6 +41,6 @@ def insertion_sort(array):
                 break
 
 
-array = [1, 5, 3, 7, 4, 4, 6, 2, 10]
+array = [1, 5, 3, 7, 4, 4, 6, 2, 10, 222]
 insertion_sort(array)
 print(f"Sorted array: {array}")
